@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curriculum Explorer & Matrix Framework</title>
+    <title>Technologies Explorer</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
@@ -30,6 +30,14 @@
             .shadow-sm, .shadow-md, .shadow-2xl { box-shadow: none !important; }
             .border { border-color: #cbd5e1 !important; }
         }
+        /* Custom scrollbar for mobile view menu */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-p-0 antialiased selection:bg-indigo-500 selection:text-white text-[11px] sm:text-xs" 
@@ -38,69 +46,75 @@
 
     <!-- Header -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm w-full">
-        <div class="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-200">
-                    <i class="fa-solid fa-graduation-cap text-base"></i>
+        <div class="w-full px-3 sm:px-6 lg:px-8 py-3 flex flex-col items-stretch gap-3">
+            
+            <!-- Top Branding & Action row -->
+            <div class="flex items-center justify-between w-full">
+                <div class="flex items-center space-x-2.5 sm:space-x-3">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-200 shrink-0">
+                        <i class="fa-solid fa-graduation-cap text-base"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-xs sm:text-base text-slate-900 leading-tight">Technologies Explorer</h1>
+                        <p class="text-[10px] sm:text-[11px] text-slate-500">Interactive Knowledge & Skills Framework</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="font-bold text-xs sm:text-base text-slate-900 leading-tight">Curriculum Explorer Matrix</h1>
-                    <p class="text-[10px] sm:text-[11px] text-slate-500">Interactive Knowledge & Skills Framework</p>
+
+                <!-- Desktop / Quick Actions Right side -->
+                <div class="flex items-center space-x-1.5 sm:space-x-2">
+                    <button @click="exportCurrentViewPDF()" 
+                            title="Download PDF"
+                            class="p-2 sm:px-3 sm:py-1.5 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xs font-semibold flex items-center space-x-1">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span class="hidden sm:inline">Export PDF</span>
+                    </button>
+                    <button @click="resetFilters()" 
+                            title="Reset Filters"
+                            class="p-2 sm:px-3 sm:py-1.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 text-xs flex items-center space-x-1">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span class="hidden sm:inline">Reset</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- View Switcher & Actions -->
-            <div class="flex items-center space-x-2">
-                <div class="bg-slate-100 p-1 rounded-xl flex items-center space-x-1 border border-slate-200 overflow-x-auto">
-                    <button @click="currentView = 'cards'" 
-                            :class="currentView === 'cards' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
-                            class="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition-all flex items-center space-x-1 whitespace-nowrap">
-                        <i class="fa-solid fa-grip"></i>
-                        <span class="hidden md:inline">Cards</span>
-                    </button>
-                    <button @click="currentView = 'table'" 
-                            :class="currentView === 'table' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
-                            class="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition-all flex items-center space-x-1 whitespace-nowrap">
-                        <i class="fa-solid fa-table-list"></i>
-                        <span class="hidden md:inline">Table</span>
-                    </button>
-                    <button @click="currentView = 'tree'" 
-                            :class="currentView === 'tree' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
-                            class="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition-all flex items-center space-x-1 whitespace-nowrap">
-                        <i class="fa-solid fa-sitemap"></i>
-                        <span>Visual Tree</span>
-                    </button>
-                    <button @click="currentView = 'understanding_matrix'" 
-                            :class="currentView === 'understanding_matrix' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
-                            class="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition-all flex items-center space-x-1 whitespace-nowrap">
-                        <i class="fa-solid fa-border-all"></i>
-                        <span>Understanding Matrix</span>
-                    </button>
-                    <button @click="currentView = 'knows_dos_matrix'" 
-                            :class="currentView === 'knows_dos_matrix' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
-                            class="px-2.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition-all flex items-center space-x-1 whitespace-nowrap">
-                        <i class="fa-solid fa-list-check"></i>
-                        <span>Knows & Dos</span>
-                    </button>
-                </div>
-
-                <button @click="exportCurrentViewPDF()" 
-                        title="Download current view PDF/Print"
-                        class="p-2 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-all text-xs font-semibold flex items-center space-x-1">
-                    <i class="fa-solid fa-file-pdf"></i>
-                    <span class="hidden sm:inline">Export PDF</span>
+            <!-- Responsive View Switcher: Stacked Vertically on mobile, Horizontal on sm+ -->
+            <div class="bg-slate-100 p-1.5 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-1.5 w-full">
+                <button @click="currentView = 'cards'" 
+                        :class="currentView === 'cards' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'"
+                        class="px-3 py-2 sm:py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center sm:justify-start space-x-2 w-full sm:w-auto">
+                    <i class="fa-solid fa-grip text-indigo-500 sm:text-indigo-600"></i>
+                    <span>Cards View</span>
                 </button>
-
-                <button @click="resetFilters()" 
-                        title="Reset Filters"
-                        class="p-2 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all text-xs">
-                    <i class="fa-solid fa-rotate-right"></i>
+                <button @click="currentView = 'table'" 
+                        :class="currentView === 'table' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'"
+                        class="px-3 py-2 sm:py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center sm:justify-start space-x-2 w-full sm:w-auto">
+                    <i class="fa-solid fa-table-list text-indigo-500 sm:text-indigo-600"></i>
+                    <span>Table View</span>
+                </button>
+                <button @click="currentView = 'tree'" 
+                        :class="currentView === 'tree' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'"
+                        class="px-3 py-2 sm:py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center sm:justify-start space-x-2 w-full sm:w-auto">
+                    <i class="fa-solid fa-sitemap text-indigo-500 sm:text-indigo-600"></i>
+                    <span>Visual Tree</span>
+                </button>
+                <button @click="currentView = 'understanding_matrix'" 
+                        :class="currentView === 'understanding_matrix' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'"
+                        class="px-3 py-2 sm:py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center sm:justify-start space-x-2 w-full sm:w-auto">
+                    <i class="fa-solid fa-border-all text-indigo-500 sm:text-indigo-600"></i>
+                    <span>Understanding Matrix</span>
+                </button>
+                <button @click="currentView = 'knows_dos_matrix'" 
+                        :class="currentView === 'knows_dos_matrix' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'"
+                        class="px-3 py-2 sm:py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-center sm:justify-start space-x-2 w-full sm:w-auto">
+                    <i class="fa-solid fa-list-check text-indigo-500 sm:text-indigo-600"></i>
+                    <span>Knows & Dos Matrix</span>
                 </button>
             </div>
+
         </div>
     </header>
 
-    <main class="w-full px-4 sm:px-6 lg:px-8 py-6 max-w-full">
+    <main class="w-full px-3 sm:px-6 lg:px-8 py-6 max-w-full">
 
         <template x-if="loading">
             <div class="flex flex-col items-center justify-center py-24 space-y-4">
@@ -264,9 +278,9 @@
 
                 <!-- Technologies Purpose Statement & Big Ideas Banner -->
                 <template x-if="isTechnologiesSelected">
-                    <div class="bg-gradient-to-br from-indigo-900 via-indigo-800 to-violet-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl space-y-6 border border-indigo-700">
+                    <div class="bg-gradient-to-br from-indigo-900 via-indigo-800 to-violet-900 rounded-2xl p-5 sm:p-8 text-white shadow-xl space-y-6 border border-indigo-700">
                         <div class="flex items-center space-x-3 pb-4 border-b border-indigo-700/60">
-                            <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white text-base shadow-inner">
+                            <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white text-base shadow-inner shrink-0">
                                 <i class="fa-solid fa-microchip"></i>
                             </div>
                             <div>
@@ -331,7 +345,7 @@
                         <!-- Group Cards by Curriculum Area -->
                         <template x-for="area in activeCurriculumAreas" :key="area">
                             <div class="space-y-4" x-data="{ area: area }">
-                                <div class="bg-gradient-to-r from-indigo-900 to-violet-900 text-white px-5 py-3.5 rounded-2xl flex items-center justify-between shadow-sm">
+                                <div class="bg-gradient-to-r from-indigo-900 to-violet-900 text-white px-4 sm:px-5 py-3.5 rounded-2xl flex items-center justify-between shadow-sm">
                                     <div class="flex items-center space-x-2.5">
                                         <div class="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center">
                                             <i class="fa-solid fa-layer-group text-white text-xs"></i>
@@ -431,7 +445,7 @@
                             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden w-full"
                                  x-data="{ areaOpen: true, area: area }">
                                 <div @click="areaOpen = !areaOpen" 
-                                     class="bg-gradient-to-r from-indigo-900 to-violet-900 text-white px-6 py-4 flex items-center justify-between cursor-pointer select-none hover:opacity-95 transition">
+                                     class="bg-gradient-to-r from-indigo-900 to-violet-900 text-white px-4 sm:px-6 py-4 flex items-center justify-between cursor-pointer select-none hover:opacity-95 transition">
                                     <div class="flex items-center space-x-2.5">
                                         <div class="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center">
                                             <i class="fa-solid fa-layer-group text-white text-xs"></i>
@@ -448,7 +462,7 @@
                                     <template x-for="levelStrandGroup in [...new Set(filteredItems.filter(i => i.curriculumArea === area).map(i => (i.level || 'N/A') + '___' + (i.strand || 'N/A')))].sort((a,b) => sortLevels(a.split('___')[0], b.split('___')[0]))" :key="levelStrandGroup">
                                         <div class="w-full" x-data="{ groupOpen: true, levelStrandGroup: levelStrandGroup }">
                                             <div @click="groupOpen = !groupOpen" 
-                                                 class="bg-slate-100 px-6 py-3 border-y border-slate-200 flex items-center justify-between cursor-pointer select-none hover:bg-slate-200/60 transition">
+                                                 class="bg-slate-100 px-4 sm:px-6 py-3 border-y border-slate-200 flex items-center justify-between cursor-pointer select-none hover:bg-slate-200/60 transition">
                                                 <div class="flex items-center space-x-2">
                                                     <span class="px-2.5 py-0.5 rounded-md font-bold text-[10px] shadow-xs" :class="getLevelBadgeClass(levelStrandGroup.split('___')[0])" x-text="levelStrandGroup.split('___')[0]"></span>
                                                     <span class="text-slate-700 font-bold text-xs" x-text="'Strand: ' + levelStrandGroup.split('___')[1]"></span>
@@ -461,7 +475,7 @@
 
                                             <div x-show="groupOpen" x-transition class="divide-y divide-slate-100">
                                                 <template x-for="stmtGroup in [...new Set(filteredItems.filter(i => i.curriculumArea === area && (i.level || 'N/A') === levelStrandGroup.split('___')[0] && (i.strand || 'N/A') === levelStrandGroup.split('___')[1]).map(i => i.statement || 'N/A'))]" :key="stmtGroup">
-                                                    <div class="p-5 sm:p-6 space-y-3 bg-white" x-data="{ stmtOpen: true, stmtGroup: stmtGroup }">
+                                                    <div class="p-4 sm:p-6 space-y-3 bg-white" x-data="{ stmtOpen: true, stmtGroup: stmtGroup }">
                                                         <div @click="stmtOpen = !stmtOpen" 
                                                              class="bg-blue-50/70 border border-blue-100 rounded-xl p-3.5 flex items-start justify-between cursor-pointer select-none hover:bg-blue-100/60 transition">
                                                             <div class="pr-2">
@@ -539,10 +553,10 @@
                 <!-- Visual Tree View (Level Top-Level Hierarchy) -->
                 <template x-if="currentView === 'tree'">
                     <div class="space-y-4 w-full" x-data="{ lvl: '' }">
-                        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4 w-full">
-                            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-sm space-y-4 w-full">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-100 gap-2">
                                 <div class="flex items-center space-x-2.5">
-                                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md">
+                                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shrink-0">
                                         <i class="fa-solid fa-sitemap text-xs"></i>
                                     </div>
                                     <div>
@@ -550,7 +564,7 @@
                                         <p class="text-[10px] text-slate-500">Click headers to expand Levels, Curriculum Areas, Strands, and Sub-Strands. Expand sub-strands to view Knowledge & Skills inline.</p>
                                     </div>
                                 </div>
-                                <div class="text-[10px] font-medium text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-xl border border-indigo-100">
+                                <div class="text-[10px] font-medium text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-xl border border-indigo-100 shrink-0 self-start sm:self-auto">
                                     Active Levels: <span class="font-bold" x-text="activeTreeLevels.length"></span>
                                 </div>
                             </div>
@@ -691,7 +705,7 @@
                             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4 w-full" x-data="{ area: area }">
                                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-100 gap-2">
                                     <div class="flex items-center space-x-2.5">
-                                        <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white">
+                                        <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white shrink-0">
                                             <i class="fa-solid fa-layer-group text-xs"></i>
                                         </div>
                                         <div>
@@ -699,7 +713,7 @@
                                             <p class="text-[10px] sm:text-[11px] text-slate-500">Strands as column headers, levels in ascending order as rows. Click any sub-strand tag to inspect Know & Do statements.</p>
                                         </div>
                                     </div>
-                                    <div class="text-[10px] sm:text-[11px] font-medium text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-100">
+                                    <div class="text-[10px] sm:text-[11px] font-medium text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-100 shrink-0 self-start sm:self-auto">
                                         Records in Area: <span class="font-bold" x-text="filteredItems.filter(i => i.curriculumArea === area).length"></span>
                                     </div>
                                 </div>
@@ -762,7 +776,7 @@
                             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4 w-full" x-data="{ area: area }">
                                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-100 gap-2">
                                     <div class="flex items-center space-x-2.5">
-                                        <div class="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center text-white">
+                                        <div class="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center text-white shrink-0">
                                             <i class="fa-solid fa-list-check text-xs"></i>
                                         </div>
                                         <div>
@@ -770,7 +784,7 @@
                                             <p class="text-[10px] sm:text-[11px] text-slate-500">Structured layout showing Strand, Level, Understanding Statement, Sub-Strands, and delimited bullet points for Knows & Dos.</p>
                                         </div>
                                     </div>
-                                    <div class="text-[10px] sm:text-[11px] font-medium text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100">
+                                    <div class="text-[10px] sm:text-[11px] font-medium text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100 shrink-0 self-start sm:self-auto">
                                         Total Records: <span class="font-bold" x-text="filteredItems.filter(i => i.curriculumArea === area).length"></span>
                                     </div>
                                 </div>
@@ -846,21 +860,21 @@
     <!-- Detail Modal -->
     <div x-show="modalOpen" 
          x-cloak
-         class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+         class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto">
         <div @click.away="modalOpen = false" 
-             class="bg-white rounded-2xl border border-slate-200 max-w-xl w-full p-4 sm:p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200">
+             class="bg-white rounded-2xl border border-slate-200 max-w-xl w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
             <div class="flex items-start justify-between">
                 <div>
                     <span class="px-2.5 py-1 rounded-md font-bold text-[10px] uppercase shadow-xs inline-block mb-1.5" :class="getLevelBadgeClass(activeItem.level)" x-text="activeItem.level"></span>
                     <h3 class="text-sm sm:text-base font-bold text-slate-900" x-text="activeItem.curriculumArea"></h3>
                 </div>
-                <button @click="modalOpen = false" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition">
+                <button @click="modalOpen = false" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition shrink-0">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
 
             <div class="space-y-3 text-xs">
-                <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
                     <div>
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Strand</span>
                         <p class="font-semibold text-slate-800" x-text="activeItem.strand"></p>
